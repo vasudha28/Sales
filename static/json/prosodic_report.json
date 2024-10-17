@@ -1,0 +1,22 @@
+{
+    "Category": [
+        "Loudness",
+        "Words per Second",
+        "Flow of Speech"
+    ],
+    "Classification": [
+        "Low",
+        "Good",
+        "Good"
+    ],
+    "Reason": [
+        "The energy is too low, indicating low volume or soft speech.",
+        "The speech rate is in a balanced range.",
+        "The flow of speaking is smooth and well-paced, with a balanced rhythm."
+    ],
+    "Score": [
+        2,
+        5,
+        5
+    ]
+}

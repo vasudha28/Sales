@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grammar and Prosodic Report</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center mb-4">Grammar and Prosodic Report</h1>
+
+        <!-- Display Grammar Report if available -->
+        {% if grammar_report %}
+        <h2>Grammar Report</h2>
+        <pre>{{ grammar_report }}</pre>
+        {% endif %}
+
+        <div class="text-center mt-4">
+            <a href="/" class="btn btn-primary">Go to Homepage</a>
+        </div>
+    </div>
+</body>
+</html>

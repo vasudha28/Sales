@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Loan Pitch</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #f9f9f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            font-size: 24px;
+            color: #0044cc;
+        }
+
+        .question {
+            font-size: 20px;
+            margin-top: 20px;
+        }
+
+        .section-title {
+            font-weight: bold;
+            color: #0044cc;
+            margin-top: 20px;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        ul li {
+            padding: 8px 0;
+        }
+
+        .start-btn {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            padding: 10px 20px;
+            font-size: 18px;
+            text-decoration: none;
+            border-radius: 5px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .start-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Next Question:</h1>
+
+        <p class="question">Hi, “USER NAME,” today you’ll pitch the personal loan for the customer “Raj” through a telephone conversation. The details of the personal loan from XYZ Bank are as follows:</p>
+
+        <div class="section-title">Product:</div>
+        <ul>
+            <li>Loan type: Personal loan</li>
+            <li>Maximum limit: Rs. 5,00,000</li>
+            <li>Interest rate: 12% - 10%</li>
+        </ul>
+
+        <div class="section-title">Customer details:</div>
+        <ul>
+            <li>Age: 28</li>
+            <li>CIBIL score: 890</li>
+            <li>Type of customer: Self-employed</li>
+            <li>Income per month: Approximately Rs.30,000 monthly</li>
+            <li>Existing loan: NO</li>
+        </ul>
+
+        <a href="{{ url_for('index1') }}" class="start-btn">Start Interview</a>
+
+       
+    </div>
+
+</body>
+</html>

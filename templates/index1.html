@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chatbot Application with Speech-to-Text</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .chat-container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .chat-box {
+            height: 400px;
+            overflow-y: auto;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            background-color: #e9ecef;
+        }
+        .message {
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            max-width: 80%;
+        }
+        .message.user {
+            background-color: #d1e7dd;
+            align-self: flex-end;
+        }
+        .message.response {
+            background-color: #f8d7da;
+            align-self: flex-start;
+        }
+        .message-container {
+            display: flex;
+            flex-direction: column;
+        }
+        .mic-button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container chat-container">
+    <h3 class="text-center">Chatbot Application with Speech-to-Text</h3>
+    <div class="chat-box" id="chatBox">
+        <!-- Chat messages will appear here -->
+    </div>
+    <div class="form-group mt-3">
+        <textarea class="form-control" id="messageInput" rows="3" placeholder="Type your message..."></textarea>
+    </div>
+    <button class="btn btn-primary btn-block" id="sendMessageBtn">Send</button>
+    <button class="btn btn-secondary btn-block mic-button" id="micBtn">🎤 Speak</button>
+</div>
+
+<script>
+    document.getElementById('sendMessageBtn').addEventListener('click', function() {
+        const messageInput = document.getElementById('messageInput');
+        const messageText = messageInput.value.trim();
+
+        if (messageText !== "") {
+            // Append user's message to the chat box
+            addMessageToChat(messageText, 'user');
+
+            // Send the message to the server via POST request
+            sendMessageToServer(messageText);
+        }
+    });
+
+    document.getElementById('micBtn').addEventListener('click', function() {
+        startSpeechRecognition();
+    });
+
+    function addMessageToChat(message, messageType) {
+        const chatBox = document.getElementById('chatBox');
+        const messageContainer = document.createElement('div');
+        messageContainer.classList.add('message', messageType);
+
+        messageContainer.textContent = message;
+        chatBox.appendChild(messageContainer);
+
+        // Scroll to the bottom of the chat
+        chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function sendMessageToServer(messageText) {
+        fetch('/api', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ message: messageText }),  // Send message as JSON
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.error) {
+                // Handle any errors returned from the server
+                addMessageToChat(data.error, 'response');
+            } else {
+                // Append the response text to the chat box
+                addMessageToChat(data.response, 'response');
+
+                // If the conversation ends, redirect to the end page
+                if (data.end) {
+                    window.location.href = '/end'; // Redirect to the end page
+                }
+
+                // Play the audio response
+                playAudioResponse(data.audio_file);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            addMessageToChat('Error: Could not send message.', 'response');
+        });
+
+        // Clear the input
+        document.getElementById('messageInput').value = '';
+    }
+
+    function playAudioResponse(audioUrl) {
+        const audio = new Audio(audioUrl);
+        audio.play();
+    }
+
+    function startSpeechRecognition() {
+        if ('webkitSpeechRecognition' in window) {
+            const recognition = new webkitSpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+
+            recognition.onstart = function() {
+                console.log('Voice recognition started. Speak into the microphone.');
+            };
+
+            recognition.onresult = function(event) {
+                const transcript = event.results[0][0].transcript;
+                console.log(`Transcribed text: ${transcript}`);
+                document.getElementById('messageInput').value = transcript;
+                addMessageToChat(transcript, 'user');
+                sendMessageToServer(transcript);
+            };
+
+            recognition.onerror = function(event) {
+                console.error('Speech recognition error: ', event.error);
+                addMessageToChat('Error recognizing speech.', 'response');
+            };
+
+            recognition.start();
+        } else {
+            alert("Speech Recognition is not supported in this browser. Try using Chrome.");
+        }
+    }
+
+    // Function to periodically check if the conversation has ended
+    function checkTimeoutStatus() {
+        fetch('/check_timeout', {
+            method: 'GET',
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.end) {
+                window.location.href = '/end';  // Redirect if conversation ended
+            }
+        })
+        .catch(error => {
+            console.error('Error checking timeout status:', error);
+        });
+    }
+
+    // Set an interval to check for timeout every 5 seconds
+    setInterval(checkTimeoutStatus, 5000);  // Check every 5 seconds
+
+</script>
+
+
+</body>
+</html>
